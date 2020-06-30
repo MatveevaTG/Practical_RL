@@ -9,6 +9,7 @@ from featureExtractors import *
 import random
 import util
 import math
+import numpy as np
 from collections import defaultdict
 
 
@@ -64,9 +65,7 @@ class QLearningAgent(ReinforcementAgent):
             return 0.0
 
         "*** YOUR CODE HERE ***"
-        raise NotImplementedError
-
-        return 0.
+        return max([self.getQValue(state, x) for x in possibleActions])
 
     def getPolicy(self, state):
         """
@@ -82,8 +81,8 @@ class QLearningAgent(ReinforcementAgent):
         best_action = None
 
         "*** YOUR CODE HERE ***"
-        raise NotImplementedError
-
+        i = np.argmax([self.getQValue(state, x) for x in possibleActions])
+        best_action = possibleActions[i]
         return best_action
 
     def getAction(self, state):
@@ -110,7 +109,10 @@ class QLearningAgent(ReinforcementAgent):
         epsilon = self.epsilon
 
         "*** YOUR CODE HERE ***"
-        raise NotImplementedError
+        if util.flipCoin(epsilon) == 1:
+            action = random.choice(possibleActions)
+        else:
+            action = self.getPolicy(state)
 
         return action
 
@@ -128,12 +130,11 @@ class QLearningAgent(ReinforcementAgent):
         learning_rate = self.alpha
 
         "*** YOUR CODE HERE ***"
-        raise NotImplementedError
 
-        reference_qvalue = PleaseImplementMe
-        updated_qvalue = PleaseImplementMe
+        reference_qvalue = reward + gamma*self.getValue(nextState)
+        updated_qvalue = (1-learning_rate)*self.getQValue(state, action) + learning_rate*reference_qvalue
 
-        self.setQValue(PleaseImplementMe, PleaseImplementMe, updated_qvalue)
+        self.setQValue(state, action, updated_qvalue)
 
 
 #---------------------#end of your code#---------------------#
